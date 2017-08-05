@@ -55,6 +55,7 @@ module Rails
             %i[index foreign_key polymorphic].each do |opt|
               options[opt] = true if provided_options.include?(opt.to_s)
             end
+            options[:foreign_key] = !options[:polymorphic]
           end
           options[:null] = provided_options.any? { |opt| %w[null optional].include?(opt) }
 
@@ -157,19 +158,11 @@ module Rails
       end
 
       def inject_options
-        "".tap { |s| options_for_migration.each { |k, v| s << ", #{k}: #{v.inspect}" } }
+        "".tap { |s| attr_options.each { |k, v| s << ", #{k}: #{v.inspect}" } }
       end
 
       def inject_index_options
         has_uniq_index? ? ", unique: true" : ""
-      end
-
-      def options_for_migration
-        @attr_options.dup.tap do |options|
-          if reference? && !polymorphic?
-            options[:foreign_key] = true
-          end
-        end
       end
     end
   end

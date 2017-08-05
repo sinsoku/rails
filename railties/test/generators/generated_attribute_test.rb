@@ -149,4 +149,13 @@ class GeneratedAttributeTest < Rails::Generators::TestCase
     assert att.has_index?
     assert att.optional?
   end
+
+  def test_parse_string_attribute_with_options
+    att = Rails::Generators::GeneratedAttribute.parse("username:string{30,optional}:uniq")
+    assert_equal "username", att.name
+    assert_equal :string, att.type
+    assert_equal 30, att.attr_options[:limit]
+    assert att.optional?
+    assert att.has_uniq_index?
+  end
 end
