@@ -67,13 +67,13 @@ module ApplicationTests
           output = `bin/rails db:migrate`
           assert_match(/create_table\(:users\)/, output)
           assert_match(/CreateUsers: migrated/, output)
-          assert_match(/add_column\(:users, :email, :string\)/, output)
+          assert_match(/add_column\(:users, :email, :string, {:null=>false, :default=>\"MyString\"}\)/, output)
           assert_match(/AddEmailToUsers: migrated/, output)
 
           output = `bin/rails db:rollback STEP=2`
           assert_match(/drop_table\(:users\)/, output)
           assert_match(/CreateUsers: reverted/, output)
-          assert_match(/remove_column\(:users, :email, :string\)/, output)
+          assert_match(/remove_column\(:users, :email, :string, {:null=>false, :default=>\"MyString\"}\)/, output)
           assert_match(/AddEmailToUsers: reverted/, output)
         end
       end

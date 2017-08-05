@@ -157,8 +157,11 @@ module Rails
         type == :token
       end
 
-      def inject_options
-        "".tap { |s| attr_options.each { |k, v| s << ", #{k}: #{v.inspect}" } }
+      def inject_options(is_addition: false)
+        "".tap do |s|
+          attr_options.each { |k, v| s << ", #{k}: #{v.inspect}" }
+          s << ", default: #{default.inspect}" if is_addition && !optional?
+        end
       end
 
       def inject_index_options
