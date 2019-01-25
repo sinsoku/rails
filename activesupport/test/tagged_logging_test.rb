@@ -128,4 +128,14 @@ class TaggedLoggingTest < ActiveSupport::TestCase
 
     assert_equal "[BCX] [Jason] Funky time\n[BCX] Junky time!\n", @output.string
   end
+
+  test "tagged all loggers" do
+    output2 = StringIO.new
+    logger2 = ActiveSupport::TaggedLogging.new(MyLogger.new(output2))
+    @logger.extend ActiveSupport::Logger.broadcast(logger2)
+
+    @logger.tagged("BCX") { @logger.info "Stuff" }
+    assert_equal "[BCX] Stuff\n", @output.string
+    assert_equal "[BCX] Stuff\n", output2.string
+  end
 end

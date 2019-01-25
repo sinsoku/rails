@@ -74,6 +74,12 @@ module ActiveSupport
             end
           end
         end
+
+        define_method(:tagged) do |*tags, &block|
+          logger.tagged(*tags) do
+            super(*tags, &block)
+          end
+        end
       end
     end
 
