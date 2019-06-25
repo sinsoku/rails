@@ -617,6 +617,10 @@ module ActiveRecord
         execute "ALTER TABLE #{quote_table_name(table_name)} #{remove_column_for_alter(table_name, column_name, type, options)}"
       end
 
+      def changes_column(table_name, column_name, options = {})
+        raise NotImplementedError, "changes_column is not implemented"
+      end
+
       # Changes the column's definition according to the new options.
       # See TableDefinition#column for details of the options you can use.
       #

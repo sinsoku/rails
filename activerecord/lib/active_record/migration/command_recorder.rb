@@ -11,7 +11,7 @@ module ActiveRecord
     # * add_index
     # * add_reference
     # * add_timestamps
-    # * change_column
+    # *  change_column
     # * change_column_default (must supply a :from and :to option)
     # * change_column_null
     # * change_column_comment (must supply a :from and :to option)
@@ -23,7 +23,7 @@ module ActiveRecord
     # * drop_table (must supply a block)
     # * enable_extension
     # * remove_column (must supply a type)
-    # * remove_columns (must specify at least one column name or more)
+    # *  remove_columns (must specify at least one column name or more)
     # * remove_foreign_key (must supply a second table)
     # * remove_index
     # * remove_reference

@@ -603,6 +603,10 @@ module ActiveRecord
         @base.change_column(name, column_name, type, options)
       end
 
+      def changes(column_name, options = {})
+        @base.changes_column(name, column_name, options)
+      end
+
       # Sets a new default value for a column.
       #
       #  t.change_default(:qualification, 'new')

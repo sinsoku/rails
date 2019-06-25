@@ -260,6 +260,10 @@ module ActiveRecord
         end
       end
 
+      def changes_column(table_name, column_name, options = {}) #:nodoc:
+        # TODO: implement me
+      end
+
       def change_column(table_name, column_name, type, options = {}) #:nodoc:
         alter_table(table_name) do |definition|
           definition[column_name].instance_eval do
