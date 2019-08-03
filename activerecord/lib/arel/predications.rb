@@ -46,7 +46,7 @@ module Arel # :nodoc: all
           lteq(other.end)
         end
       elsif other.end.nil? || open_ended?(other.end)
-        if other.exclude_end?
+        if other.respond_to?(:exclude_begin?) && other.exclude_begin?
           gt(other.begin)
         else
           gteq(other.begin)

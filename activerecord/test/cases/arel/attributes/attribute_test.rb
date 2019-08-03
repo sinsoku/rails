@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../helper"
+require_relative "../../../../../activesupport/lib/active_support/core_ext/range/exclude_begin"
 require "ostruct"
 
 module Arel
@@ -674,6 +675,16 @@ module Arel
           it "can be constructed with a closed range implicitly ending at Infinity" do
             attribute = Attribute.new nil, nil
             node = attribute.between(eval("0...")) # Use eval for compatibility with Ruby < 2.6 parser
+
+            node.must_equal Nodes::GreaterThanOrEqual.new(
+              attribute,
+              Nodes::Casted.new(0, attribute)
+            )
+          end
+
+          it "can be constructed with a range excluding begin" do
+            attribute = Attribute.new nil, nil
+            node = attribute.between(eval("0..").exclude_begin) # Use eval for compatibility with Ruby < 2.6 parser
 
             node.must_equal Nodes::GreaterThan.new(
               attribute,
