@@ -639,11 +639,21 @@ module Arel
         end
 
         if Gem::Version.new("2.7.0") <= Gem::Version.new(RUBY_VERSION)
-          it "can be constructed with a range implicitly starting at Infinity" do
+          it "can be constructed with a half open range implicitly starting at Infinity" do
             attribute = Attribute.new nil, nil
             node = attribute.between(eval("..0")) # eval for backwards compatibility
 
             node.must_equal Nodes::LessThanOrEqual.new(
+              attribute,
+              Nodes::Casted.new(0, attribute)
+            )
+          end
+
+          it "can be constructed with a closed range implicitly starting at Infinity" do
+            attribute = Attribute.new nil, nil
+            node = attribute.between(eval("...0")) # eval for backwards compatibility
+
+            node.must_equal Nodes::LessThan.new(
               attribute,
               Nodes::Casted.new(0, attribute)
             )
