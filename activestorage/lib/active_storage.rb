@@ -43,7 +43,6 @@ module ActiveStorage
   autoload :Analyzer
 
   mattr_accessor :logger
-  mattr_accessor :verifier
   mattr_accessor :variant_processor, default: :mini_magick
 
   mattr_accessor :queues, default: {}
@@ -64,6 +63,15 @@ module ActiveStorage
   mattr_accessor :draw_routes, default: true
 
   mattr_accessor :replace_on_assign_to_many, default: false
+
+  def self.verifier
+    @verifier = @verifier.call if @verifier.is_a?(Proc)
+    @verifier
+  end
+
+  def self.verifier=(val)
+    @verifier = val
+  end
 
   module Transformers
     extend ActiveSupport::Autoload

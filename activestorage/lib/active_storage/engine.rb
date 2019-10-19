@@ -95,7 +95,7 @@ module ActiveStorage
 
     initializer "active_storage.verifier" do
       config.after_initialize do |app|
-        ActiveStorage.verifier = app.message_verifier("ActiveStorage")
+        ActiveStorage.verifier = -> { app.message_verifier("ActiveStorage") }
       end
     end
 
