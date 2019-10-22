@@ -80,6 +80,8 @@ class Author < ActiveRecord::Base
            before_add: [:log_before_adding, Proc.new { |o, r| o.post_log << "before_adding_proc#{r.id || '<new>'}" }],
            after_add: [:log_after_adding,  Proc.new { |o, r| o.post_log << "after_adding_proc#{r.id || '<new>'}" }]
   has_many :unchangeable_posts, class_name: "Post", before_add: :raise_exception, after_add: :log_after_adding
+  has_many :aborting_posts, class_name: "Post", before_add: :throw_abort, after_add: :log_after_adding
+  has_many :unremovable_posts, class_name: "Post", before_remove: :throw_abort, after_remove: :log_after_removing
 
   has_many :categorizations, -> { }
   has_many :categories, through: :categorizations
@@ -203,6 +205,10 @@ class Author < ActiveRecord::Base
 
     def raise_exception(object)
       raise Exception.new("You can't add a post")
+    end
+
+    def throw_abort(object)
+      throw(:abort)
     end
 end
 

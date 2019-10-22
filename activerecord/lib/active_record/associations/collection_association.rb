@@ -117,7 +117,7 @@ module ActiveRecord
           load_target
           concat_records(records)
         else
-          transaction { concat_records(records) }
+          transaction_with_catch_abort { concat_records(records) }
         end
       end
 
@@ -250,7 +250,7 @@ module ActiveRecord
         else
           replace_common_records_in_memory(other_array, original_target)
           if other_array != original_target
-            transaction { replace_records(other_array, original_target) }
+            transaction_with_catch_abort { replace_records(other_array, original_target) }
           else
             other_array
           end
@@ -352,7 +352,7 @@ module ActiveRecord
             attributes.collect { |attr| _create_record(attr, raise, &block) }
           else
             record = build_record(attributes, &block)
-            transaction do
+            transaction_with_catch_abort do
               result = nil
               add_to_target(record) do
                 result = insert_record(record, true, raise) {
@@ -384,7 +384,7 @@ module ActiveRecord
           if existing_records.empty?
             remove_records(existing_records, records, method)
           else
-            transaction { remove_records(existing_records, records, method) }
+            transaction_with_catch_abort { remove_records(existing_records, records, method) }
           end
         end
 
@@ -502,6 +502,20 @@ module ActiveRecord
             expects_array ? [ record ] : record
           else
             load_target.select { |r| ids.include?(r.id.to_s) }
+          end
+        end
+
+        def transaction_with_catch_abort
+          transaction do
+            terminate = true
+            ret = nil
+
+            catch(:abort) do
+              ret = yield
+              terminate = false
+            end
+            raise ActiveRecord::Rollback if terminate
+            ret
           end
         end
     end

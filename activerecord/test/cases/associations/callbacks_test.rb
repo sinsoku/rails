@@ -188,4 +188,24 @@ class AssociationCallbacksTest < ActiveRecord::TestCase
     @david.reload
     assert_not_includes @david.unchangeable_posts, @authorless
   end
+
+  def test_dont_add_if_before_callback_throw_abort
+    assert_not_includes @david.aborting_posts, @authorless
+    @david.aborting_posts << @authorless
+
+    assert_empty @david.post_log
+    assert_not_includes @david.aborting_posts, @authorless
+    @david.reload
+    assert_not_includes @david.aborting_posts, @authorless
+  end
+
+  def test_dont_remove_if_before_callback_throw_abort
+    first_post = @david.unremovable_posts.first
+    @david.unremovable_posts.delete(first_post)
+
+    assert_empty @david.post_log
+    assert_includes @david.unremovable_posts, first_post
+    @david.reload
+    assert_includes @david.unremovable_posts, first_post
+  end
 end
