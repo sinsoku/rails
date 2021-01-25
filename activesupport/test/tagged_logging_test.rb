@@ -137,6 +137,17 @@ class TaggedLoggingTest < ActiveSupport::TestCase
 
     assert_equal "[BCX] [Jason] Funky time\n[BCX] Junky time!\n", @output.string
   end
+
+  test "keeps broadcasting functionality" do
+    broadcast_output = StringIO.new
+    broadcast_logger = ActiveSupport::TaggedLogging.new(Logger.new(broadcast_output))
+    @logger.extend(ActiveSupport::Logger.broadcast(broadcast_logger))
+
+    @logger.tagged("OMG") { @logger.info "Broadcasting..." }
+
+    assert_equal "[OMG] Broadcasting...\n", @output.string
+    assert_equal "[OMG] Broadcasting...\n", broadcast_output.string
+  end
 end
 
 class TaggedLoggingWithoutBlockTest < ActiveSupport::TestCase
